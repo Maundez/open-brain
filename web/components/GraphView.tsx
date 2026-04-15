@@ -56,6 +56,7 @@ export default function GraphView() {
     types: [...ALL_TYPES],
     topic: null,
     person: null,
+    minConnections: 1,
   });
 
   // --- Canvas sizing ---

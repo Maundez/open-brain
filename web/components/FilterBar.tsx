@@ -8,6 +8,7 @@ interface Filters {
   type: string;
   topic: string;
   person: string;
+  status: string;
 }
 
 interface FilterBarProps {
@@ -35,7 +36,7 @@ export default function FilterBar({ filters, onChange }: FilterBarProps) {
     onChange({ ...filters, ...partial });
   };
 
-  const hasFilters = filters.q || filters.type || filters.topic || filters.person;
+  const hasFilters = filters.q || filters.type || filters.topic || filters.person || filters.status;
 
   return (
     <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -80,6 +81,17 @@ export default function FilterBar({ filters, onChange }: FilterBarProps) {
         <option value="person_note">person_note</option>
       </select>
 
+      <select
+        value={filters.status}
+        onChange={(e) => update({ status: e.target.value })}
+        className="bg-bg border border-border rounded px-2 py-1.5 text-text-secondary focus:border-amber/50 focus:outline-none"
+      >
+        <option value="">all statuses</option>
+        <option value="active">active</option>
+        <option value="superseded">superseded</option>
+        <option value="archived">archived</option>
+      </select>
+
       <input
         type="text"
         value={filters.topic}
@@ -99,7 +111,7 @@ export default function FilterBar({ filters, onChange }: FilterBarProps) {
       {hasFilters && (
         <button
           onClick={() =>
-            onChange({ q: "", mode: "text", type: "", topic: "", person: "" })
+            onChange({ q: "", mode: "text", type: "", topic: "", person: "", status: "" })
           }
           className="px-2 py-1.5 text-xs text-text-muted hover:text-text-secondary"
         >

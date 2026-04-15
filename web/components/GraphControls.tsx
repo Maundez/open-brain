@@ -53,13 +53,14 @@ export default function GraphControls({
   };
 
   const clearFilters = () => {
-    setFilters({ types: [...ALL_TYPES], topic: null, person: null });
+    setFilters({ types: [...ALL_TYPES], topic: null, person: null, minConnections: 1 });
   };
 
   const hasActiveFilter =
     filters.types.length < ALL_TYPES.length ||
     filters.topic !== null ||
-    filters.person !== null;
+    filters.person !== null ||
+    filters.minConnections !== 1;
 
   return (
     <div className="w-64 bg-surface border border-border rounded-lg shadow-xl overflow-hidden">
@@ -199,6 +200,24 @@ export default function GraphControls({
               </select>
             </section>
           )}
+
+          {/* Min connections */}
+          <section>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-text-secondary text-xs">Min connections</span>
+              <span className="text-text-muted text-xs">{filters.minConnections}</span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={5}
+              value={filters.minConnections}
+              onChange={(e) =>
+                setFilters({ ...filters, minConnections: Number(e.target.value) })
+              }
+              className="w-full accent-amber"
+            />
+          </section>
 
           {/* Action buttons */}
           <section className="space-y-2">

@@ -5,6 +5,8 @@ export interface ThoughtMetadata {
   action_items: string[];
   dates_mentioned: string[];
   source: "web" | "mcp";
+  status?: "active" | "superseded" | "archived";
+  superseded_reason?: string;
 }
 
 export interface Thought {

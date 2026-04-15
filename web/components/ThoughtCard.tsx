@@ -182,6 +182,16 @@ export default function ThoughtCard({
             {m.action_items.length} action{m.action_items.length > 1 ? "s" : ""}
           </span>
         )}
+        {m.status && m.status !== "active" && (
+          <span
+            className={`px-2 py-0.5 rounded text-xs ${
+              m.status === "superseded" ? "badge-superseded" : "badge-archived"
+            }`}
+            title={m.superseded_reason}
+          >
+            {m.status.toUpperCase()}
+          </span>
+        )}
         <span className="text-xs text-text-muted ml-auto">{date}</span>
         <span className="text-xs text-text-muted/50">{m.source}</span>
       </div>

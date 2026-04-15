@@ -13,6 +13,7 @@ export async function GET() {
   const { data, error } = await getSupabase()
     .from("thoughts")
     .select("id, content, metadata, created_at") // Never include 'embedding'
+    .not("metadata->>status", "eq", "superseded")
     .order("created_at", { ascending: false });
 
   if (error) {

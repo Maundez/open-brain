@@ -31,6 +31,7 @@ export interface GraphFilters {
   types: string[]; // Only nodes whose type is in this set are kept
   topic: string | null; // Highlight filter — applied visually, not structurally
   person: string | null; // Highlight filter — applied visually, not structurally
+  minConnections: number; // Structural filter — hides nodes below this degree
 }
 
 // ---------------------------------------------------------------------------
@@ -143,14 +144,16 @@ export function buildGraph(thoughts: Thought[]): GraphData {
 // ---------------------------------------------------------------------------
 
 export function filterGraph(data: GraphData, filters: GraphFilters): GraphData {
-  const { types } = filters;
+  const { types, minConnections } = filters;
 
   if (types.length === 0) {
     return { nodes: [], edges: [] };
   }
 
   const keepSet = new Set(
-    data.nodes.filter((n) => types.includes(n.type)).map((n) => n.id)
+    data.nodes
+      .filter((n) => types.includes(n.type) && n.connections >= minConnections)
+      .map((n) => n.id)
   );
 
   const nodes = data.nodes.filter((n) => keepSet.has(n.id));

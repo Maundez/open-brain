@@ -15,6 +15,7 @@ interface Filters {
   type: string;
   topic: string;
   person: string;
+  status: string;
 }
 
 export default function Home() {
@@ -28,6 +29,7 @@ export default function Home() {
     type: "",
     topic: "",
     person: "",
+    status: "",
   });
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -47,6 +49,7 @@ export default function Home() {
     if (filters.type) params.set("type", filters.type);
     if (filters.topic) params.set("topic", filters.topic);
     if (filters.person) params.set("person", filters.person);
+    if (filters.status) params.set("status", filters.status);
 
     try {
       const res = await fetch(`/api/thoughts?${params}`);

@@ -350,6 +350,71 @@ server.registerTool(
   }
 );
 
+// Tool 5: Retire Thought
+const RetireThoughtSchema = {
+  thought_id: z.string().uuid().describe("UUID of the thought to retire"),
+  reason: z.string().optional().describe("Why this thought is being superseded"),
+};
+
+server.registerTool(
+  "retire_thought",
+  {
+    title: "Retire Thought",
+    description:
+      "Mark a thought as superseded. It is retained for audit but hidden from future searches and excluded from semantic search results. Use when a previously captured thought has been replaced by newer, more accurate information.",
+    inputSchema: RetireThoughtSchema,
+  },
+  async ({ thought_id, reason }) => {
+    try {
+      const { data: existing, error: fetchError } = await supabase
+        .from("thoughts")
+        .select("id, metadata")
+        .eq("id", thought_id)
+        .single();
+
+      if (fetchError || !existing) {
+        return {
+          content: [{ type: "text" as const, text: `Thought not found: ${thought_id}` }],
+          isError: true,
+        };
+      }
+
+      const updatedMetadata = {
+        ...(existing.metadata as Record<string, unknown>),
+        status: "superseded",
+        superseded_at: new Date().toISOString(),
+        ...(reason ? { superseded_reason: reason } : {}),
+      };
+
+      const { error: updateError } = await supabase
+        .from("thoughts")
+        .update({ metadata: updatedMetadata })
+        .eq("id", thought_id);
+
+      if (updateError) {
+        return {
+          content: [{ type: "text" as const, text: `Failed to retire: ${updateError.message}` }],
+          isError: true,
+        };
+      }
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `Thought ${thought_id} marked as superseded${reason ? ` — ${reason}` : ""}. It is hidden from future searches but retained for audit.`,
+          },
+        ],
+      };
+    } catch (err: unknown) {
+      return {
+        content: [{ type: "text" as const, text: `Error: ${(err as Error).message}` }],
+        isError: true,
+      };
+    }
+  }
+);
+
 // --- Hono App with Auth Check ---
 
 const app = new Hono();

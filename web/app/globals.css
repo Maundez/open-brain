@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .badge-superseded {
+    @apply bg-red-500/10 text-red-400;
+  }
+  .badge-archived {
+    @apply bg-zinc-500/10 text-zinc-400;
+  }
+}
+
 @layer base {
   body {
     @apply bg-bg text-text-primary font-mono text-sm antialiased;

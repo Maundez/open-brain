@@ -11,6 +11,7 @@ export async function GET(req: NextRequest) {
   const person = params.get("person");
   const q = params.get("q");
   const mode = params.get("mode") || "text";
+  const status = params.get("status");
 
   // Semantic search path
   if (q && mode === "semantic") {
@@ -27,7 +28,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: error.message }, { status: 500 });
       }
 
-      // Post-filter by type/topic/person if provided
+      // Post-filter by type/topic/person/status if provided
       let results = data || [];
       if (type) {
         results = results.filter((t: { metadata: Record<string, unknown> }) => t.metadata?.type === type);
@@ -40,6 +41,15 @@ export async function GET(req: NextRequest) {
       if (person) {
         results = results.filter((t: { metadata: Record<string, unknown> }) =>
           Array.isArray(t.metadata?.people) && (t.metadata.people as string[]).includes(person)
+        );
+      }
+      if (status) {
+        results = results.filter((t: { metadata: Record<string, unknown> }) =>
+          t.metadata?.status === status
+        );
+      } else {
+        results = results.filter((t: { metadata: Record<string, unknown> }) =>
+          t.metadata?.status !== "superseded"
         );
       }
 
@@ -67,6 +77,12 @@ export async function GET(req: NextRequest) {
   if (topic) query = query.contains("metadata", { topics: [topic] });
   if (person) query = query.contains("metadata", { people: [person] });
   if (q) query = query.ilike("content", `%${q}%`);
+  if (status) {
+    query = query.eq("metadata->>status", status);
+  } else {
+    // Exclude superseded by default; include rows with no status key (NULL-safe)
+    query = query.or("metadata->>status.neq.superseded,metadata->>status.is.null");
+  }
 
   const from = (page - 1) * pageSize;
   query = query.range(from, from + pageSize - 1);
