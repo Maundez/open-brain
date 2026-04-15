@@ -1,0 +1,26 @@
+node_modules
+.next
+.git
+.gitignore
+
+# Environment files — never bake secrets into the image
+.env
+.env.*
+!.env.production.example
+
+# Development and editor files
+*.md
+.vscode
+.idea
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test artefacts
+coverage

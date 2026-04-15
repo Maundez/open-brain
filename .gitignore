@@ -1,0 +1,22 @@
+cat > ~/dev/projects/open-brain/.gitignore << 'EOF'
+# Environment files
+.env
+.env.local
+.env.production
+web/.env
+web/.env.local
+web/.env.production
+
+# Build artifacts
+web/.next/
+web/node_modules/
+
+# Supabase temp
+supabase/.temp/
+
+# Ingestion data (local only)
+ingestion data/
+
+# VS Code
+.vscode/
+EOF

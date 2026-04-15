@@ -1,0 +1,15 @@
+services:
+  open-brain-ui:
+    image: open-brain-ui:latest
+    container_name: open-brain-ui
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.production
+    networks:
+      - nuc-proxy
+
+networks:
+  nuc-proxy:
+    external: true

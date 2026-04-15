@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude_ai_Open_Brain__search_thoughts",
+      "mcp__claude_ai_Open_Brain__capture_thought",
+      "Bash(npm install:*)",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/next-auth/package.json'\\).version\\)\")",
+      "Bash(npm run:*)"
+    ]
+  }
+}
